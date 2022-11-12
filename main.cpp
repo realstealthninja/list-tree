@@ -1,7 +1,10 @@
+#include "main.h"
 #include <iostream>
 #include <filesystem>
 #define FMT_HEADER_ONLY
 #include <fmt/core.h>
+#include "main.h"
+
 namespace fs = std::filesystem;
 
 void printdir(const fs::path& path) {
@@ -24,8 +27,8 @@ void printdir(const fs::path& path) {
         }
         slashes -= 1;
         diff = slashes - path_slashes;
-        for (int i{0}; i <= diff; i++)
-            spaces += "  ";
+
+        for (int i{0}; i <= diff; i++) spaces += "  ";
 
         fullPath += fmt::format("{}├─{}\n", spaces, fileName);
         spaces = "";
@@ -36,8 +39,16 @@ void printdir(const fs::path& path) {
 
 int main(int argc, char *argv[]) {
     if (argc != 2) {
-        printdir("."); 
+        printdir(".");
+        return 0;
+    }
+    if (std::strcmp(argv[1], "--help") == 0) {
+        printf("\e[0;34m%s\e[0m\n", ART);
+        printf("lt <dir>\n");
+        printf("lt : displays tree of the current directory\n");
+        printf("lt --help : displays this menu\n");
         return 0;
     }
     printdir(argv[1]);
+    return 0;
 }
