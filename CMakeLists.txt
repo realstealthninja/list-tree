@@ -5,7 +5,7 @@ include(CTest)
 enable_testing()
 
 add_executable(list-tree main.cpp)
-
+set(CMAKE_CXX_STANDARD 20)
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
 include(CPack)

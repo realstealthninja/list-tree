@@ -4,27 +4,40 @@
 #include <fmt/core.h>
 namespace fs = std::filesystem;
 
-void printdir(fs::path path) {
-    int depth = 0;
-    std::string spaces = "";
-    std::string fullPath = "";
+void printdir(const fs::path& path) {
+    std::string fullPath;
+    std::string spaces;
+    int slashes = 0;
+    int diff;
+    int path_slashes;
+    for (char e : path.generic_string()) {
+        if (e != '/') continue;
+        path_slashes++;
+    }
     for(const auto& file : fs::recursive_directory_iterator(path)){
         std::string fileName = file.path().filename();
-        std::string parent_path = file.path().parent_path().concat("/");
-        if(file.is_directory()){
+        if (file.is_directory())
             fileName = fmt::format("┬─ \e[0;34m🗁 {}\e[0m", fileName);
-            depth++;
+        for (char e : file.path().generic_string()) {
+            if (e != '/') continue;
+            slashes++;
         }
-        if (parent_path == path) { depth=0; }
-        for(int i; i<depth; i++) { spaces += "  ";}
+        slashes -= 1;
+        diff = slashes - path_slashes;
+        for (int i{0}; i <= diff; i++)
+            spaces += "  ";
+
         fullPath += fmt::format("{}├─{}\n", spaces, fileName);
+        spaces = "";
+        slashes = 0;
     }
     std::cout << fullPath;
 }
 
 int main(int argc, char *argv[]) {
-    printdir(argv[1]);
     if (argc != 2) {
+        printdir("."); 
         return 0;
     }
+    printdir(argv[1]);
 }
